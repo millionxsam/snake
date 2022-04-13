@@ -13,7 +13,7 @@ reset.addEventListener('mouseup', () => {
 });
 
 reset.addEventListener('click', () => {
-    window.location = '/';
+    window.location = '/snake';
 });
 
 let lastRenderTime = 0;
@@ -22,7 +22,7 @@ let gameOver = false;
 function main(currentTime) {
     if (gameOver) {
         if (confirm('You Lost. Press ok to restart.')) {
-            window.location = '/';
+            window.location = '/snake';
         }
         return;
     }
