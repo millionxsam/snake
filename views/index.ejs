@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake</title>
+    <link rel="icon" href="/assets/icon.png">
+    <link rel="stylesheet" href="/assets/icons/all.css">
+    <script src="/src/game.js" defer type="module"></script>
+    <style>
+        * {
+            color: white;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        html {
+            display: flex;
+            flex-direction: column;
+        }
+
+        body {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            background-color: black;
+        }
+
+        #game-board {
+            background-color: rgb(36, 36, 36);
+            width: 90vmin;
+            height: 90vmin;
+            display: grid;
+            margin-left: 5rem;
+            grid-template-rows: repeat(21, 1fr);
+            grid-template-columns: repeat(21, 1fr);
+            border: 5px solid #7a7a7a;
+        }
+
+        #game-over {
+            background-color: rgb(36, 36, 36);
+            width: 90vmin;
+            height: 90vmin;
+            display: none;
+            margin-left: 5rem;
+            grid-template-rows: repeat(21, 1fr);
+            grid-template-columns: repeat(21, 1fr);
+            border: 5px solid #7a7a7a;
+        }
+
+        .snake {
+            background-color: #008000;
+            border: .35vmin solid black;
+        }
+
+        .food {
+            background-color: red;
+            border: .35vmin solid black;
+        }
+
+        [title] {
+            font-size: 50px;
+            color: green;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        div.settings {
+            background-color: rgb(36, 36, 36);
+            display: flex;
+            height: 40rem;
+            width: 50rem;
+            margin-top: 5rem;
+            border: 5px solid #7a7a7a;
+            justify-content: center;
+        }
+
+        div.settings ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        div.settings-2 ul li {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        div.settings-2 ul li:first-child {
+            margin-top: 0;
+        }
+
+        div.settings-2 {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        div.settings-2 h2 {
+            margin-left: 9rem;
+            font-size: 25px;
+        }
+
+        div.settings-2 label {
+            font-weight: 200;
+            font-size: 20px;
+        }
+
+        div.settings-2 input {
+            margin-left: 10px;
+            color: black;
+            background-color: #cacaca;
+            border: 5px solid #ccc;
+            border-radius: 5px;
+        }
+
+        div.settings-2 button {
+            background-color: #ac000085;
+            border: none;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 20px 2px;
+            font-weight: bold;
+            transition: all 0.25s ease;
+        }
+
+        div.settings-2 button:hover {
+            background-color: #ff000085;
+            border-radius: 2px 20px;
+        }
+
+        [reset-board].down:hover, [reset-settings].down:hover {
+            background-color: #a70000b0;
+        }
+
+        [reset-board].down, [reset-settings].down {
+            transition: all 0.15s ease;
+            margin-top: 2px;
+            margin-right: 2px;
+        }
+
+        [title] img {
+            height: 50px;
+            width: 50px;
+            margin-right: .5rem;
+        }
+
+        [notify] {
+            color: lightgreen;
+        }
+
+        [notify]::before {
+            content: '✅';
+            display: none;
+        }
+
+        [notify].active::before {
+            display: initial;
+        }
+
+        [credits] {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        [credits] i {
+            margin-top: 1rem;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        [credits] i:hover {
+            color: rgba(255, 255, 255, 0.568)
+        }
+
+        [title] {
+            justify-content: center;
+            align-items: center;
+            display: flex;
+        }
+
+        #game-over.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #game-over.active h1 {
+            font-size: 100px;
+            color: red;
+        }
+
+        #game-over.active button {
+            color: blue;
+            border: none;
+            background: #2193b0;
+            background: -webkit-linear-gradient(to right, #6dd5ed, #2193b0);
+            background: linear-gradient(to right, #6dd5ed, #2193b0);
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+            padding-right: 3.5rem;
+            padding-left: 3.5rem;
+            border-radius: 40px 5px;
+            font-size: 40px;
+            cursor: pointer;
+            box-shadow: 0 0 80px blue;
+            transition: all 0.3s ease;
+        }
+
+        #game-over.active button:hover {
+            border-radius: 5px 40px;
+            box-shadow: 0 0 80px #00006e;
+            color: #00006e;
+        }
+    </style>
+</head>
+<body>
+    <div class="settings">
+        <div class="settings-2">
+            <h1 title>
+                <img src="/assets/icon.png">Snake
+            </h1>
+            <h2>Settings</h2>
+            <ul>
+                <li>
+                    <label for="speed">Snake Speed:</label>
+                    <input type="number" placeholder="Default: 5" id="speed" snake-speed>
+                </li>
+                <li>
+                    <label for="growth">Snake Growth Rate:</label>
+                    <input type="number" placeholder="Default: 3" id="growth" snake-growth>
+                </li>
+                <li>
+                    <button reset-board>Reset Game Board</button>
+                </li>
+                <li>
+                    <button reset-settings>Reset Settings</button>
+                </li>
+                <li credits>
+                    <strong>Created by millionxsam</strong>
+                    <a target="_blank" rel="noopener" href="https://github.com/millionxsam"><i class="fa-brands fa-github"></i></a>
+                </li>
+                <li>
+                    <div notify></div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="game-board"></div>
+    <div id="game-over">
+        <h1>You Lost!</h1>
+        <button retry>Retry</button>
+    </div>
+</body>
+</html>
