@@ -1,7 +1,7 @@
 const express = require('express');
 
 const app = express();
-const port = 5000;
+const port = 3000;
 
 app.use('/src', express.static(__dirname + '/src'));
 app.use('/assets', express.static(__dirname + '/assets'));
